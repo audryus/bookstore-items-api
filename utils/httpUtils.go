@@ -14,7 +14,7 @@ var (
 
 type httpUtilsInteface interface {
 	ResponseJSON(http.ResponseWriter, int, interface{})
-	ResponseError(http.ResponseWriter, *errors.RestErr)
+	ResponseError(http.ResponseWriter, errors.RestErr)
 }
 
 type httpUtils struct{}
@@ -27,6 +27,6 @@ func (u *httpUtils) ResponseJSON(w http.ResponseWriter, statusCode int, body int
 }
 
 //ResponseError error response SOLID
-func (u *httpUtils) ResponseError(w http.ResponseWriter, err *errors.RestErr) {
-	u.ResponseJSON(w, err.Status, err)
+func (u *httpUtils) ResponseError(w http.ResponseWriter, err errors.RestErr) {
+	u.ResponseJSON(w, err.Status(), err)
 }

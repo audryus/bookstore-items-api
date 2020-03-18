@@ -10,7 +10,7 @@ const (
 )
 
 //Save the item
-func (i *Item) Save() *errors.RestErr {
+func (i *Item) Save() errors.RestErr {
 	result, err := clients.ElasticSearch.Index(indexItems, i)
 	if err != nil {
 		return errors.InternalServerError("error when trying to save item", errors.New("database error"))

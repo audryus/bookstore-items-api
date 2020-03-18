@@ -16,14 +16,15 @@ var (
 
 //Init connection to ES
 func Init() {
+	logger := logger.Get()
 	client, err := elastic.NewClient(
 		elastic.SetURL("http://local.audryus.com:9200"),
 		// elastic.SetSniff(false),
 		elastic.SetHealthcheckInterval(10*time.Second),
 		// elastic.SetRetrier(NewCustomRetrier()),
 		// elastic.SetGzip(true),
-		// elastic.SetErrorLog(log.New(os.Stderr, "ELASTIC ", log.LstdFlags)),
-		// elastic.SetInfoLog(log.New(os.Stdout, "", log.LstdFlags)),
+		elastic.SetErrorLog(logger),
+		elastic.SetInfoLog(logger),
 		// elastic.SetHeaders(http.Header{
 		// 	"X-Caller-Id": []string{"..."},
 		// }),
