@@ -2,9 +2,11 @@ package clients
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	"github.com/olivere/elastic"
+	"gitlab.com/aubayaml/aubayaml-go/bookstore/utils-go/logger"
 )
 
 var (
@@ -48,8 +50,15 @@ func (es *elasticSearch) setClient(cl *elastic.Client) {
 
 func (es *elasticSearch) Index(index string, doc interface{}) (*elastic.IndexResponse, error) {
 	ctx := context.Background()
-	return es.client.
+	result, err := es.client.
+		Index().
 		Index(index).
 		BodyJson(doc).
 		Do(ctx)
+
+	if err != nil {
+		logger.Error(fmt.Sprintf("error when trying to index document in %s", index), err)
+		return nil, err
+	}
+	return result, nil
 }

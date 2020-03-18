@@ -17,7 +17,10 @@ type itemsServiceInterface interface {
 type itemService struct{}
 
 func (s *itemService) Create(item items.Item) (*items.Item, *errors.RestErr) {
-	return nil, errors.NotImpemented()
+	if err := item.Save(); err != nil {
+		return nil, err
+	}
+	return &item, nil
 }
 
 func (s *itemService) Get(ID string) (*items.Item, *errors.RestErr) {

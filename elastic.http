@@ -1,4 +1,4 @@
-GET http://local.audryus.com:9200 HTTP/1.1
+GET http://local.audryus.com:9200/ HTTP/1.1
 Content-Type: application/json
 ###
 PUT http://local.audryus.com:9200/items HTTP/1.1
@@ -15,3 +15,13 @@ Content-Type: application/json
 ###
 GET http://local.audryus.com:9200/items HTTP/1.1
 Content-Type: application/json
+
+
+###
+GET http://local.audryus.com:9200/items/_search HTTP/1.1
+Content-Type: application/json
+
+###
+GET http://local.audryus.com:9200/_nodes/http?pretty HTTP/1.1
+Content-Type: application/json
+

@@ -31,6 +31,12 @@ func (c *itemController) Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	sellerID := oauth.GetCallerID(r)
+	if sellerID == 0 {
+		utils.HTTP.ResponseError(w, errors.UnautorizedError())
+		return
+	}
+
 	requestBody, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		utils.HTTP.ResponseError(w, errors.BadRequestError("invalid request body", err))
@@ -43,7 +49,7 @@ func (c *itemController) Create(w http.ResponseWriter, r *http.Request) {
 		utils.HTTP.ResponseError(w, errors.BadRequestError("invalid item json body", err))
 		return
 	}
-	itemRequest.Seller = oauth.GetCallerID(r)
+	itemRequest.Seller = sellerID
 	result, createErr := services.ItemService.Create(itemRequest)
 
 	if createErr != nil {
