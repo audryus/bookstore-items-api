@@ -4,8 +4,11 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"net/http"
+	"strings"
 
+	"github.com/gorilla/mux"
 	"gitlab.com/aubayaml/aubayaml-go/bookstore/items-api/domain/items"
+	"gitlab.com/aubayaml/aubayaml-go/bookstore/items-api/domain/queries"
 	"gitlab.com/aubayaml/aubayaml-go/bookstore/items-api/services"
 	"gitlab.com/aubayaml/aubayaml-go/bookstore/items-api/utils"
 	"gitlab.com/aubayaml/aubayaml-go/bookstore/oauth-go/oauth"
@@ -20,6 +23,7 @@ var (
 type itemControllerInterface interface {
 	Create(http.ResponseWriter, *http.Request)
 	Get(http.ResponseWriter, *http.Request)
+	Search(http.ResponseWriter, *http.Request)
 }
 
 type itemController struct{}
@@ -61,5 +65,37 @@ func (c *itemController) Create(w http.ResponseWriter, r *http.Request) {
 
 //Get item by id
 func (c *itemController) Get(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	itemID := strings.TrimSpace(vars["id"])
 
+	item, err := services.ItemService.Get(itemID)
+	if err != nil {
+		utils.HTTP.ResponseError(w, err)
+		return
+	}
+
+	utils.HTTP.ResponseJSON(w, http.StatusOK, item)
+}
+
+//Get item by id
+func (c *itemController) Search(w http.ResponseWriter, r *http.Request) {
+	requestBody, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		utils.HTTP.ResponseError(w, errors.BadRequestError("invalid json body", err))
+		return
+	}
+	defer r.Body.Close()
+	var query queries.EsQuery
+
+	if err := json.Unmarshal(requestBody, &query); err != nil {
+		utils.HTTP.ResponseError(w, errors.BadRequestError("invalid query json body", err))
+		return
+	}
+
+	items, err := services.ItemService.Search(query)
+	if err != nil {
+		utils.HTTP.ResponseError(w, errors.BadRequestError("invalid search criteria", err))
+		return
+	}
+	utils.HTTP.ResponseJSON(w, http.StatusOK, items)
 }
