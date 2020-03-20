@@ -17,5 +17,19 @@ Content-Type: application/json
 GET http://local.audryus.com:9200/items/_search HTTP/1.1
 Content-Type: application/json
 ###
-GET http://127.0.0.1:8082/items/vlj07XABmt_784Z9M-k8 HTTP/1.1
+GET http://127.0.0.1:8082/items/73ic83ABYjOXFcGbrI-w HTTP/1.1
 Content-Type: application/json
+
+###
+POST http://127.0.0.1:8082/items/search HTTP/1.1
+Content-Type: application/json
+
+{
+    "equals": [
+        {
+            "field": "seller",
+            "value": 1
+        }
+    ]
+}
+###
